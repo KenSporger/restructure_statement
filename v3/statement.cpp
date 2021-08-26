@@ -47,9 +47,15 @@ string usd(double num)
 
 string statement(const Invoice &invoices, const Plays &plays)
 {
-	double totalAmount = 0;
 	int volumeCredits = 0;
 	string result = "Statement for " + invoices.customer + "\n";
+
+	double totalAmount = 0;
+	for (auto perf : invoices.performances)
+	{
+		double thisAmount = amountFor(perf, plays.at(perf.playID));
+		totalAmount += thisAmount;
+	}
 
 	for (auto perf : invoices.performances)
 	{
@@ -58,7 +64,6 @@ string statement(const Invoice &invoices, const Plays &plays)
 		volumeCredits += volumeCreditsFor(perf, plays.at(perf.playID));
 
 		result += " " + plays.at(perf.playID).name + ": " + usd(thisAmount) + "(" + to_string(perf.audience) + " seats)\n";
-		totalAmount += thisAmount;
 	}
 
 	result += "Amount owed is " + usd(totalAmount) + "\n";
