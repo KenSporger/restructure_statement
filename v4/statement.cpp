@@ -69,9 +69,9 @@ string renderPlainText(const StatementData& data, const Invoice &invoices, const
 {
 	string result = "Statement for " + data.customer + "\n";
 
-	for (auto perf : invoices.performances)
+	for (auto perf : data.performances)
 	{
-		result += " " + plays.at(perf.playID).name + ": " + usd(amountFor(perf, plays.at(perf.playID))) + "(" + to_string(perf.audience) + " seats)\n";
+		result += " " + perf.play.name + ": " + usd(perf.amount) + "(" + to_string(perf.audience) + " seats)\n";
 	}
 
 	result += "Amount owed is " + usd(totalAmount(invoices, plays)) + "\n";
@@ -80,11 +80,20 @@ string renderPlainText(const StatementData& data, const Invoice &invoices, const
 	return result;
 }
 
+StatementPerf enrichPerformance(const Performance & perf, const Plays &plays)
+{
+	StatementPerf result(perf);
+	result.play = plays.at(perf.playID);
+	result.amount = amountFor(perf, plays.at(perf.playID));
+	result.volumeCredits = volumeCreditsFor(perf, plays.at(perf.playID));
+	return result;
+}
+
 
 string statement(const Invoice &invoices, const Plays &plays)
 {
 	StatementData result;
 	result.customer = invoices.customer;
-
+	for (auto perf : invoices.performances) result.performances.push_back(enrichPerformance(perf, plays));
 	return renderPlainText(result, invoices, plays);
 }
