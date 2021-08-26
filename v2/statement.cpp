@@ -30,6 +30,14 @@ double amountFor(const Performance &perf, const Play &play)
 	return result;
 }
 
+int volumeCreditsFor(const Performance &perf, const Play &play)
+{
+	int result = 0;
+	result += max(perf.audience - 30, 0);
+	if (play.type == "comedy") result += (int)floor(perf.audience / 5);
+	return result;
+}
+
 
 string statement(const Invoice &invoices, const Plays &plays)
 {
@@ -49,8 +57,7 @@ string statement(const Invoice &invoices, const Plays &plays)
 		
 		double thisAmount = amountFor(perf, play);
 
-		volumeCredits += max(perf.audience - 30, 0);
-		if (play.type == "comedy") volumeCredits += (int)floor(perf.audience / 5);
+		volumeCredits += volumeCreditsFor(perf, play);
 
 		result += " " + play.name + ": " + format(thisAmount / 100) + "(" + to_string(perf.audience) + " seats)\n";
 		totalAmount += thisAmount;
