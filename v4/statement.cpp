@@ -65,7 +65,7 @@ int totalVolumeCredits(const Invoice &invoices, const Plays &plays)
 	return result;
 }
 
-string renderPlainText(const StatementData& data, const Invoice &invoices, const Plays &plays)
+string renderPlainText(const StatementData& data)
 {
 	string result = "Statement for " + data.customer + "\n";
 
@@ -74,8 +74,8 @@ string renderPlainText(const StatementData& data, const Invoice &invoices, const
 		result += " " + perf.play.name + ": " + usd(perf.amount) + "(" + to_string(perf.audience) + " seats)\n";
 	}
 
-	result += "Amount owed is " + usd(totalAmount(invoices, plays)) + "\n";
-	result += "You earned " + to_string(totalVolumeCredits(invoices, plays)) + " credits\n";
+	result += "Amount owed is " + usd(data.totalAmount) + "\n";
+	result += "You earned " + to_string(data.totalVolumeCredits) + " credits\n";
 
 	return result;
 }
@@ -95,5 +95,7 @@ string statement(const Invoice &invoices, const Plays &plays)
 	StatementData result;
 	result.customer = invoices.customer;
 	for (auto perf : invoices.performances) result.performances.push_back(enrichPerformance(perf, plays));
-	return renderPlainText(result, invoices, plays);
+	result.totalAmount = totalAmount(invoices, plays);
+	result.totalVolumeCredits = totalVolumeCredits(invoices, plays);
+	return renderPlainText(result);
 }
