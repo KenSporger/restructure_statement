@@ -38,18 +38,18 @@ int volumeCreditsFor(const Performance &perf, const Play &play)
 	return result;
 }
 
+string usd(double num)
+{
+	char temp[20];
+	sprintf_s(temp, 20, "%.2lf", num / 100);
+	return "$" + string(temp);
+}
 
 string statement(const Invoice &invoices, const Plays &plays)
 {
 	double totalAmount = 0;
 	int volumeCredits = 0;
 	string result = "Statement for " + invoices.customer + "\n";
-
-	auto format = [](double num)->string {
-		char temp[20];
-		sprintf_s(temp, 20, "%.2lf", num);
-		return "$" + string(temp);
-	};
 
 	for (auto perf : invoices.performances)
 	{
@@ -59,11 +59,11 @@ string statement(const Invoice &invoices, const Plays &plays)
 
 		volumeCredits += volumeCreditsFor(perf, play);
 
-		result += " " + play.name + ": " + format(thisAmount / 100) + "(" + to_string(perf.audience) + " seats)\n";
+		result += " " + play.name + ": " + usd(thisAmount) + "(" + to_string(perf.audience) + " seats)\n";
 		totalAmount += thisAmount;
 	}
 
-	result += "Amount owed is " + format(totalAmount / 100) + "\n";
+	result += "Amount owed is " + usd(totalAmount) + "\n";
 	result += "You earned " + to_string(volumeCredits) + " credits\n";
 
 	return result;
