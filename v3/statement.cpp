@@ -45,33 +45,37 @@ string usd(double num)
 	return "$" + string(temp);
 }
 
+double totalAmount(const Invoice &invoices, const Plays &plays)
+{
+	double result = 0;
+	for (auto perf : invoices.performances)
+	{
+		result += amountFor(perf, plays.at(perf.playID));
+	}
+	return result;
+}
+
+int totalVolumeCredits(const Invoice &invoices, const Plays &plays)
+{
+	int result = 0;
+	for (auto perf : invoices.performances)
+	{
+		result += volumeCreditsFor(perf, plays.at(perf.playID));
+	}
+	return result;
+}
+
 string statement(const Invoice &invoices, const Plays &plays)
 {
-	
 	string result = "Statement for " + invoices.customer + "\n";
 
-	double totalAmount = 0;
 	for (auto perf : invoices.performances)
 	{
-		double thisAmount = amountFor(perf, plays.at(perf.playID));
-		totalAmount += thisAmount;
+		result += " " + plays.at(perf.playID).name + ": " + usd(amountFor(perf, plays.at(perf.playID))) + "(" + to_string(perf.audience) + " seats)\n";
 	}
 
-	int volumeCredits = 0;
-	for (auto perf : invoices.performances)
-	{
-		volumeCredits += volumeCreditsFor(perf, plays.at(perf.playID));
-	}
-
-	for (auto perf : invoices.performances)
-	{
-		double thisAmount = amountFor(perf, plays.at(perf.playID));
-
-		result += " " + plays.at(perf.playID).name + ": " + usd(thisAmount) + "(" + to_string(perf.audience) + " seats)\n";
-	}
-
-	result += "Amount owed is " + usd(totalAmount) + "\n";
-	result += "You earned " + to_string(volumeCredits) + " credits\n";
+	result += "Amount owed is " + usd(totalAmount(invoices, plays)) + "\n";
+	result += "You earned " + to_string(totalVolumeCredits(invoices, plays)) + " credits\n";
 
 	return result;
 }
