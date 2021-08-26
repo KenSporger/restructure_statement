@@ -89,13 +89,17 @@ StatementPerf enrichPerformance(const Performance & perf, const Plays &plays)
 	return result;
 }
 
-
-string statement(const Invoice &invoices, const Plays &plays)
+StatementData createStatementData(const Invoice &invoices, const Plays &plays)
 {
 	StatementData result;
 	result.customer = invoices.customer;
 	for (auto perf : invoices.performances) result.performances.push_back(enrichPerformance(perf, plays));
 	result.totalAmount = totalAmount(invoices, plays);
 	result.totalVolumeCredits = totalVolumeCredits(invoices, plays);
-	return renderPlainText(result);
+	return result;
+}
+
+string statement(const Invoice &invoices, const Plays &plays)
+{
+	return renderPlainText(createStatementData(invoices, plays));
 }
