@@ -3,38 +3,39 @@
 
 using namespace std;
 
-double amountFor(const Performance &perf, const Play &play)
+double amountFor(const StatementPerf &data)
 {
 	double result = 0;
-	if (play.type == "tragedy")
+	if (data.play.type == "tragedy")
 	{
 		result = 40000;
-		if (perf.audience > 30)
+		if (data.audience > 30)
 		{
-			result += 1000 * (perf.audience - 30);
+			result += 1000 * (data.audience - 30);
 		}
 	}
-	else if (play.type == "comedy")
+	else if (data.play.type == "comedy")
 	{
 		result = 30000;
-		if (perf.audience > 20)
+		if (data.audience > 20)
 		{
-			result += 10000 + 500 * (perf.audience - 20);
+			result += 10000 + 500 * (data.audience - 20);
 		}
-		result += 300 * perf.audience;
+		result += 300 * data.audience;
 	}
 	else
 	{
-		throw("unknown type: " + play.type);
+		throw("unknown type: " + data.play.type);
 	}
 	return result;
 }
 
-int volumeCreditsFor(const Performance &perf, const Play &play)
+
+int volumeCreditsFor(const StatementPerf &data)
 {
 	int result = 0;
-	result += max(perf.audience - 30, 0);
-	if (play.type == "comedy") result += (int)floor(perf.audience / 5);
+	result += max(data.audience - 30, 0);
+	if (data.play.type == "comedy") result += (int)floor(data.audience / 5);
 	return result;
 }
 
@@ -85,8 +86,8 @@ StatementPerf enrichPerformance(const Performance & perf, const Plays &plays)
 {
 	StatementPerf result(perf);
 	result.play = plays.at(perf.playID);
-	result.amount = amountFor(perf, plays.at(perf.playID));
-	result.volumeCredits = volumeCreditsFor(perf, plays.at(perf.playID));
+	result.amount = amountFor(result);
+	result.volumeCredits = volumeCreditsFor(result);
 	return result;
 }
 
