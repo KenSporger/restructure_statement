@@ -45,23 +45,24 @@ string usd(double num)
 	return "$" + string(temp);
 }
 
-double totalAmount(const Invoice &invoices, const Plays &plays)
+double totalAmount(const StatementData &data)
 {
 	double result = 0;
-	for (auto perf : invoices.performances)
+	for (auto perf : data.performances)
 	{
-		result += amountFor(perf, plays.at(perf.playID));
+		result += perf.amount;
 	}
 	return result;
 }
 
-int totalVolumeCredits(const Invoice &invoices, const Plays &plays)
+int totalVolumeCredits(const StatementData &data)
 {
 	int result = 0;
-	for (auto perf : invoices.performances)
+	for (auto perf : data.performances)
 	{
-		result += volumeCreditsFor(perf, plays.at(perf.playID));
+		result += perf.volumeCredits;
 	}
+
 	return result;
 }
 
@@ -94,8 +95,8 @@ StatementData createStatementData(const Invoice &invoices, const Plays &plays)
 	StatementData result;
 	result.customer = invoices.customer;
 	for (auto perf : invoices.performances) result.performances.push_back(enrichPerformance(perf, plays));
-	result.totalAmount = totalAmount(invoices, plays);
-	result.totalVolumeCredits = totalVolumeCredits(invoices, plays);
+	result.totalAmount = totalAmount(result);
+	result.totalVolumeCredits = totalVolumeCredits(result);
 	return result;
 }
 
