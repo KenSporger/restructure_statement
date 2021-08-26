@@ -53,13 +53,11 @@ string statement(const Invoice &invoices, const Plays &plays)
 
 	for (auto perf : invoices.performances)
 	{
-		const Play play = plays.at(perf.playID);
-		
-		double thisAmount = amountFor(perf, play);
+		double thisAmount = amountFor(perf, plays.at(perf.playID));
 
-		volumeCredits += volumeCreditsFor(perf, play);
+		volumeCredits += volumeCreditsFor(perf, plays.at(perf.playID));
 
-		result += " " + play.name + ": " + usd(thisAmount) + "(" + to_string(perf.audience) + " seats)\n";
+		result += " " + plays.at(perf.playID).name + ": " + usd(thisAmount) + "(" + to_string(perf.audience) + " seats)\n";
 		totalAmount += thisAmount;
 	}
 
