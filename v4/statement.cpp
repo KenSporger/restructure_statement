@@ -65,9 +65,9 @@ int totalVolumeCredits(const Invoice &invoices, const Plays &plays)
 	return result;
 }
 
-string statement(const Invoice &invoices, const Plays &plays)
+string renderPlainText(const StatementData& data, const Invoice &invoices, const Plays &plays)
 {
-	string result = "Statement for " + invoices.customer + "\n";
+	string result = "Statement for " + data.customer + "\n";
 
 	for (auto perf : invoices.performances)
 	{
@@ -78,4 +78,13 @@ string statement(const Invoice &invoices, const Plays &plays)
 	result += "You earned " + to_string(totalVolumeCredits(invoices, plays)) + " credits\n";
 
 	return result;
+}
+
+
+string statement(const Invoice &invoices, const Plays &plays)
+{
+	StatementData result;
+	result.customer = invoices.customer;
+
+	return renderPlainText(result, invoices, plays);
 }
