@@ -2,24 +2,9 @@
 #define _STATEMENTV5_H
 
 #include "../types.h"
-
-struct StatementPerf : public Performance
-{
-	StatementPerf(const Performance& perf)
-		:Performance(perf) {}
-	Play play;
-	double amount;
-	int volumeCredits;
-};
-
-struct StatementData
-{
-	int totalVolumeCredits;
-	double totalAmount;
-	std::string customer;
-	std::vector<StatementPerf> performances;
-};
+#include "createStatementData.h"
 
 std::string statement(const Invoice &invoices, const Plays &plays);
+std::string htmlStatement(const Invoice &invoices, const Plays &plays);
 
 #endif

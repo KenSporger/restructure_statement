@@ -21,5 +21,6 @@ int main()
 	invoices.performances.push_back({"othello", 40 });
 
 	cout << statement(invoices, plays);
+	cout << htmlStatement(invoices, plays);
 	return 0;
 }
